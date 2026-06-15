@@ -5,7 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.awt.Image;
 import java.io.File;
+
+import static java.awt.SystemTray.*;
+import static org.sikuli.script.Screen.*;
 
 /**
  * Telegram Web Monitor using SikuliX
@@ -13,7 +17,8 @@ import java.io.File;
  */
 public class TelegramMonitor {
     private static final Logger log = LoggerFactory.getLogger(TelegramMonitor.class);
-    
+    public static final String SCOT = "scot";
+
     private final Screen screen;
     private final Config config;
     private boolean isRunning = false;
@@ -28,12 +33,12 @@ public class TelegramMonitor {
     public TelegramMonitor(Config config) {
         this.config = config;
         this.screen = new Screen();
-        Settings.MinSimilarity = config.getPatternSimilarity();
+   //     Settings.MinSimilarity = config.getPatternSimilarity();
         
         // Initialize SikuliX
         try {
             log.info("Initializing SikuliX...");
-            Screen.init();
+           // Screen.init();
             log.info("SikuliX initialized successfully");
         } catch (Exception e) {
             log.error("Failed to initialize SikuliX", e);
@@ -145,13 +150,14 @@ public class TelegramMonitor {
      */
     private String getScreenText() {
         try {
-            return screen.capture().text();
+            return screen.findText(SCOT).text();
         } catch (Exception e) {
             log.debug("OCR failed", e);
             return null;
         }
     }
-    
+
+
     /**
      * Trigger alarm
      */
@@ -182,8 +188,8 @@ public class TelegramMonitor {
                            type.equals("dm") ? "New direct message!" : "Unread message!";
             
             // Use Java TrayIcon for notification
-            if (SystemTray.isSupported()) {
-                SystemTray tray = SystemTray.getDefaultSystemTray();
+            if (isSupported()) {
+                SystemTray tray = SystemTray.getSystemTray();
                 Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("/icon.png"));
                 TrayIcon trayIcon = new TrayIcon(icon, "Telegram Monitor");
                 trayIcon.setImageAutoSize(true);
@@ -201,11 +207,12 @@ public class TelegramMonitor {
      */
     public void captureScreenshot(String filename) {
         try {
-            screen.capture();
-            screen.getLastMatches().save(filename);
+            ScreenImage img = screen.capture();
+            img.save(filename);
             log.info("Screenshot saved: {}", filename);
         } catch (Exception e) {
             log.error("Failed to capture screenshot", e);
         }
     }
+
 }
