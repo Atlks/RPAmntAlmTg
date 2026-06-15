@@ -1,0 +1,9 @@
+{
+  "checkIntervalMs": 2000,
+  "searchTimeoutMs": 1000,
+  "patternSimilarity": 0.8,
+  "ocrEnabled": false,
+  "alarmSoundPath": "alarm.mp3",
+  "desktopNotification": true,
+  "telegramWindow": "Telegram"
+}
