@@ -23,7 +23,7 @@ public class S3FileCheck {
     public static void main(String[] args) throws Exception {
 
         // 1️⃣ 读取配置
-        Map<String, String> conf = loadIni("C:\\Users\\attil\\PycharmProjects\\PyPrjDba\\bkchk\\key.ini");
+        Map<String, String> conf = loadIni("/cfg/bkchk_key.ini");
 
         String accessKey = conf.get("CONFIG_S3_ACCESS_KEY_ID");
         String secretKey = conf.get("CONFIG_S3_SECRET_ACCESS_KEY").replace("\"", "");
@@ -44,10 +44,10 @@ public class S3FileCheck {
         String bucket = parseBucket(s3Path);
         String key = parseKey(s3Path);
 
-//        String iso = getBktime4es(bucket, key, s3);
-//
+        String iso = getBktime4es(bucket, key, s3);
+        System.out.println("=============esbk: " + iso);
 //      //  System.out.println(iso);
-//        System.out.println("esbk: " + iso);
+
         String bucket1 = "amzn-s3-dbbackup";
         String prefix = "wltPrj_Aws_MysqlBk/";
 
