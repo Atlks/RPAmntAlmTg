@@ -19,20 +19,20 @@ public class TelegramMonitor {
     private static final Logger log = LoggerFactory.getLogger(TelegramMonitor.class);
     public static final String SCOT = "scot";
 
-    private final Screen screen;
+  //  private Screen screen;
     private final Config config;
     private boolean isRunning = false;
     private long lastCheckTime = 0;
     private String lastMessageTime = "";
     
     // Pattern files (relative to resources directory)
-    private static final String PATTERN_MENTION = "patterns/mention_icon.png";
+    private static final String PATTERN_MENTION = "c:/prj/img/mention_icon.png.jpg";
     private static final String PATTERN_UNREAD = "patterns/unread_badge.png";
     private static final String PATTERN_DM_ICON = "patterns/dm_icon.png";
     
     public TelegramMonitor(Config config) {
         this.config = config;
-        this.screen = new Screen();
+        //is.screen = new Screen();
    //     Settings.MinSimilarity = config.getPatternSimilarity();
         
         // Initialize SikuliX
@@ -55,6 +55,7 @@ public class TelegramMonitor {
         
         while (isRunning) {
             try {
+                System.out.println(System.currentTimeMillis());
                 checkForNotifications();
                 Thread.sleep(config.getCheckIntervalMs());
             } catch (InterruptedException e) {
@@ -98,17 +99,17 @@ public class TelegramMonitor {
                 log.info("🔔 Mention detected!");
             }
             
-            // Check for unread badge
-            if (exists(PATTERN_UNREAD)) {
-                hasUnread = true;
-                log.debug("Unread message badge detected");
-            }
-            
-            // Check for DM icon
-            if (exists(PATTERN_DM_ICON)) {
-                hasDM = true;
-                log.info("💬 Direct message detected!");
-            }
+//            // Check for unread badge
+//            if (exists(PATTERN_UNREAD)) {
+//                hasUnread = true;
+//                log.debug("Unread message badge detected");
+//            }
+//
+//            // Check for DM icon
+//            if (exists(PATTERN_DM_ICON)) {
+//                hasDM = true;
+//                log.info("💬 Direct message detected!");
+//            }
             
             // Also check screen text for @ symbol in recent messages
             if (config.isOcrEnabled()) {
@@ -120,8 +121,8 @@ public class TelegramMonitor {
             }
             
             // Trigger alarm if needed
-            if (hasMention || hasDM || hasUnread) {
-                String notificationType = hasMention ? "mention" : (hasDM ? "dm" : "unread");
+            if (hasMention ) {
+                String notificationType =  "mention"  ;
                 triggerAlarm(notificationType);
             }
             
@@ -138,7 +139,11 @@ public class TelegramMonitor {
     private boolean exists(String patternPath) {
         try {
             Pattern pattern = new Pattern(patternPath);
-            return screen.exists(pattern, config.getSearchTimeoutMs()) != null;
+              Screen screen = new Screen();
+            captureScreenshot("c:/img",screen);
+            int searchTimeoutSec = config.searchTimeoutSec;
+            Match exists = screen.exists(pattern, searchTimeoutSec);
+            return exists != null;
         } catch (Exception e) {
             log.debug("Pattern not found: {}", patternPath, e);
             return false;
@@ -150,6 +155,7 @@ public class TelegramMonitor {
      */
     private String getScreenText() {
         try {
+              Screen screen= new Screen();
             return screen.findText(SCOT).text();
         } catch (Exception e) {
             log.debug("OCR failed", e);
@@ -205,11 +211,12 @@ public class TelegramMonitor {
     /**
      * Capture screenshot for debugging
      */
-    public void captureScreenshot(String filename) {
+    public void captureScreenshot(String saveDir,Screen screen) {
         try {
+             // Screen screen=new Screen();
             ScreenImage img = screen.capture();
-            img.save(filename);
-            log.info("Screenshot saved: {}", filename);
+            img.save( saveDir);
+            log.info("Screenshot saved: {}", saveDir);
         } catch (Exception e) {
             log.error("Failed to capture screenshot", e);
         }

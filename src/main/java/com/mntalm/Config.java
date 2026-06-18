@@ -17,9 +17,9 @@ public class Config {
     
     // Default values
     private int checkIntervalMs = 2000;          // Check every 2 seconds
-    private int searchTimeoutMs = 1000;          // Pattern search timeout
+    public int searchTimeoutSec = 2;          // Pattern search timeout
     private double patternSimilarity = 0.8;      // Pattern matching similarity
-    private boolean ocrEnabled = false;          // Enable OCR text detection
+    private boolean ocrEnabled = true;          // Enable OCR text detection
     private String alarmSoundPath = "alarm.mp3"; // Alarm sound file
     private boolean desktopNotification = true;  // Show desktop notifications
     private String telegramWindow = "Telegram";  // Window title to focus
@@ -46,8 +46,8 @@ public class Config {
                 if (loaded.checkIntervalMs > 0) {
                     config.checkIntervalMs = loaded.checkIntervalMs;
                 }
-                if (loaded.searchTimeoutMs > 0) {
-                    config.searchTimeoutMs = loaded.searchTimeoutMs;
+                if (loaded.searchTimeoutSec > 0) {
+                    config.searchTimeoutSec = loaded.searchTimeoutSec;
                 }
                 if (loaded.patternSimilarity > 0 && loaded.patternSimilarity <= 1.0) {
                     config.patternSimilarity = loaded.patternSimilarity;
@@ -94,9 +94,7 @@ public class Config {
         return checkIntervalMs;
     }
     
-    public int getSearchTimeoutMs() {
-        return searchTimeoutMs;
-    }
+
     
     public double getPatternSimilarity() {
         return patternSimilarity;
@@ -125,7 +123,7 @@ public class Config {
     }
     
     public void setSearchTimeoutMs(int searchTimeoutMs) {
-        this.searchTimeoutMs = searchTimeoutMs;
+        this.searchTimeoutSec = searchTimeoutMs;
     }
     
     public void setPatternSimilarity(double patternSimilarity) {
